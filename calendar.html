@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Wall Calendar — April 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:ital,wght@0,400;1,400;1,600&family=DM+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --white-95: rgba(255, 255, 255, 0.95);
+            --white-70: rgba(255, 255, 255, 0.70);
+            --white-45: rgba(255, 255, 255, 0.45);
+            --white-20: rgba(255, 255, 255, 0.20);
+            --white-12: rgba(255, 255, 255, 0.12);
+            --white-08: rgba(255, 255, 255, 0.08);
+            --white-06: rgba(255, 255, 255, 0.06);
+            --teal: rgba(42, 107, 110, 1);
+            --teal-70: rgba(42, 107, 110, 0.7);
+            --teal-15: rgba(42, 107, 110, 0.15);
+            --terra: #e8927a;
+            --terra-warm: rgba(197, 64, 30, 0.4);
+            --terra-tint: rgba(197, 64, 30, 0.08);
+            --teal-tint: rgba(42, 107, 110, 0.08);
+        }
+
+        html,
+        body {
+            height: 100%;
+            overscroll-behavior: none;
+        }
+
+        /* ── BACKGROUND ── */
+        body {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 28px 16px 56px;
+            overflow-x: hidden;
+        }
+
+        .bg-layer {
+            position: fixed;
+            inset: -5%;
+            z-index: 0;
+            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80&fm=jpg&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px) brightness(0.6) saturate(1.3);
+            transform: scale(1.08);
+            transition: background-image 1s ease;
+        }
+
+        /* mesh-gradient fallback if image fails (also always behind image) */
+        .bg-layer::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 15% 25%, #1a0a2e 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 70%, #0a1a2e 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, #1a1005 0%, transparent 60%),
+                #080810;
+            z-index: -1;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            background: rgba(10, 8, 12, 0.45);
+        }
+
+        /* ── CALENDAR WRAPPER ── */
+        .calendar-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 920px;
+            display: flex;
+            flex-direction: column;
+            /* Glass Level 1 */
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow:
+                0 32px 64px rgba(0, 0, 0, 0.5),
+                0 8px 24px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            overflow: hidden;
+        }
+
+        @supports (backdrop-filter:blur(1px)) {
+            .calendar-wrapper {
+                backdrop-filter: blur(24px) saturate(180%);
+                -webkit-backdrop-filter: blur(24px) saturate(180%);
+            }
+        }
+
+        @supports not (backdrop-filter:blur(1px)) {
+            .calendar-wrapper {
+                background: rgba(14, 12, 22, 0.88);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+            }
+        }
+
+        /* ── WIRE BINDING ── */
+        .wire-binding {
+            position: relative;
+            height: 44px;
+            /* glass strip with metal sheen */
+            background: linear-gradient(90deg,
+                    rgba(60, 60, 70, 0.6) 0%,
+                    rgba(120, 118, 130, 0.45) 20%,
+                    rgba(160, 158, 170, 0.5) 35%,
+                    rgba(100, 98, 110, 0.40) 60%,
+                    rgba(60, 60, 70, 0.6) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @supports (backdrop-filter:blur(1px)) {
+            .wire-binding {
+                backdrop-filter: blur(4px);
+            }
+        }
+
+        /* brass center nail */
+        .wire-binding::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 14px;
+            height: 14px;
+            background: radial-gradient(circle at 35% 35%, #f0dc80, #c9a84c 55%, #8a6a18);
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+            z-index: 5;
+        }
+
+        /* Binding shadow below */
+        .wire-binding::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .coil-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 0 28px;
+            width: 100%;
+            justify-content: space-evenly;
+        }
+
+        .coil {
+            position: relative;
+            width: 22px;
+            height: 34px;
+            flex-shrink: 0;
+        }
+
+        .coil-back {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0.7);
+            width: 18px;
+            height: 16px;
+            background: linear-gradient(135deg, #3a4050, #252a35);
+            border-radius: 50%;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .coil-front {
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 18px;
+            background: linear-gradient(135deg, #d4d8e0, #8a9099);
+            border-radius: 50%;
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4), 0 2px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ── HEADER: Quote + Month ── */
+        .cal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+            padding: 30px 40px 28px;
+            position: relative;
+            min-height: 190px;
+            /* base tint, JS overrides */
+            --quote-tint: var(--terra-tint);
+            background: var(--quote-tint);
+            transition: background 1.5s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            overflow: hidden;
+        }
+
+        .cal-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+        }
+
+        .quote-section {
+            flex: 1;
+            position: relative;
+        }
+
+        .big-quote-mark {
+            font-family: 'Playfair Display', serif;
+            font-size: 120px;
+            line-height: 1;
+            color: var(--terra);
+            position: absolute;
+            top: -16px;
+            left: -8px;
+            opacity: 0.8;
+            user-select: none;
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 0 70%);
+        }
+
+        .quote-track {
+            padding-top: 28px;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .quote-slide {
+            display: none;
+        }
+
+        .quote-slide.active {
+            display: block;
+            animation: quoteReveal 0.55s cubic-bezier(.22, .68, 0, 1.2) forwards;
+        }
+
+        @keyframes quoteReveal {
+            from {
+                clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+                transform: translateY(12px);
+            }
+
+            to {
+                clip-path: polygon(0 0%, 100% 0%, 100% 100%, 0 100%);
+                transform: translateY(0);
+            }
+        }
+
+        .quote-text {
+            font-family: 'Lora', serif;
+            font-style: italic;
+            font-size: 17px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.88);
+            max-width: 420px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        .quote-author {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--terra);
+            text-shadow: 0 0 12px var(--terra-warm);
+            margin-top: 14px;
+        }
+
+        .quote-dots {
+            display: flex;
+            gap: 7px;
+            margin-top: 16px;
+            padding-left: 14px;
+        }
+
+        .quote-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.22);
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .quote-dot.active {
+            background: var(--terra);
+            transform: scale(1.4);
+            box-shadow: 0 0 6px var(--terra-warm);
+        }
+
+        /* Month title */
+        .month-title-block {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .month-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 70px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1;
+            letter-spacing: -2px;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .month-year {
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 0.22em;
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 5px;
+        }
+
+        /* ── BODY ── */
+        .cal-body {
+            display: flex;
+            min-height: 520px;
+            perspective: 1200px;
+        }
+
+        /* ── NOTES PANEL ── */
+        .notes-panel {
+            width: 215px;
+            flex-shrink: 0;
+            border-right: 1px solid rgba(255, 255, 255, 0.07);
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.06);
+            background-image: repeating-linear-gradient(to bottom,
+                    transparent 0, transparent 27px,
+                    rgba(255, 255, 255, 0.05) 27px, rgba(255, 255, 255, 0.06) 28px);
+        }
+
+        @supports (backdrop-filter:blur(1px)) {
+            .notes-panel {
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+            }
+        }
+
+        .notes-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
+            padding: 10px 14px 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .range-ctx-badge {
+            font-size: 8px;
+            letter-spacing: 0.1em;
+            padding: 2px 7px;
+            border-radius: 20px;
+            background: var(--teal-70);
+            color: #fff;
+            display: none;
+        }
+
+        .range-ctx-badge.visible {
+            display: block;
+        }
+
+        .editor-area {
+            flex: 1;
+            padding: 6px 8px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .editor-area::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        .editor-area::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+        }
+
+        /* blocks */
+        .block {
+            display: flex;
+            align-items: flex-start;
+            gap: 5px;
+            margin: 1px 0;
+            position: relative;
+            min-height: 28px;
+            border-radius: 4px;
+            padding: 1px 3px;
+        }
+
+        .block:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .block-drag {
+            opacity: 0;
+            cursor: grab;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 11px;
+            padding-top: 5px;
+            flex-shrink: 0;
+            transition: opacity 0.15s;
+            user-select: none;
+        }
+
+        .block:hover .block-drag {
+            opacity: 1;
+        }
+
+        .block-check {
+            margin-top: 6px;
+            width: 13px;
+            height: 13px;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            cursor: pointer;
+            flex-shrink: 0;
+            appearance: none;
+            -webkit-appearance: none;
+            background: transparent;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .block-check:checked {
+            background: rgba(42, 107, 110, 0.9);
+            border-color: rgba(42, 107, 110, 0.9);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 5l2.5 2.5L8 3' stroke='white' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-size: contain;
+        }
+
+        .block-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-family: 'DM Mono', monospace;
+            font-size: 11.5px;
+            color: rgba(255, 255, 255, 0.88);
+            caret-color: var(--terra);
+            outline: none;
+            resize: none;
+            line-height: 1.6;
+            padding: 3px 0;
+            width: 100%;
+            min-height: 24px;
+        }
+
+        .block-input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .block.h-block .block-input {
+            font-family: 'Playfair Display', serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        .block.range-heading .block-input {
+            font-family: 'Lora', serif;
+            font-style: italic;
+            font-size: 10.5px;
+            color: rgba(42, 180, 180, 0.9);
+            text-shadow: 0 0 8px rgba(42, 107, 110, 0.5);
+        }
+
+        .block.todo-block .block-input.done {
+            text-decoration: line-through;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* slash menu */
+        .slash-menu {
+            position: fixed;
+            background: rgba(16, 14, 26, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            overflow: hidden;
+            min-width: 150px;
+        }
+
+        @supports (backdrop-filter:blur(1px)) {
+            .slash-menu {
+                backdrop-filter: blur(20px);
+            }
+        }
+
+        .slash-item {
+            padding: 9px 14px;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: rgba(255, 255, 255, 0.8);
+            transition: background 0.12s;
+        }
+
+        .slash-item:hover,
+        .slash-item.selected {
+            background: rgba(255, 255, 255, 0.09);
+        }
+
+        .slash-tag {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 9px;
+            letter-spacing: 0.08em;
+            color: var(--terra);
+        }
+
+        .attach-btn {
+            margin: 8px 10px 12px;
+            padding: 9px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.07);
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+        }
+
+        .attach-btn:hover {
+            background: rgba(42, 107, 110, 0.3);
+            border-color: rgba(42, 107, 110, 0.6);
+            color: #fff;
+        }
+
+        .attach-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* ── CALENDAR GRID PANEL ── */
+        .cal-grid {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 22px 26px 18px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.033);
+            transform-style: preserve-3d;
+            transition: transform 0.45s cubic-bezier(.4, 0, .2, 1), opacity 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        @supports (backdrop-filter:blur(1px)) {
+            .cal-grid {
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+            }
+        }
+
+        /* corner fold */
+        .cal-grid::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(225deg, rgba(255, 255, 255, 0.07) 50%, rgba(255, 255, 255, 0.03) 50%);
+            box-shadow: -3px -3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .cal-grid.flip-out {
+            animation: flipOut 0.22s cubic-bezier(.4, 0, .2, 1) forwards;
+        }
+
+        .cal-grid.flip-in {
+            animation: flipIn 0.22s cubic-bezier(.4, 0, .2, 1) forwards;
+        }
+
+        @keyframes flipOut {
+            from {
+                transform: rotateX(0deg);
+                opacity: 1;
+                box-shadow: none;
+            }
+
+            to {
+                transform: rotateX(-85deg) translateY(-20px);
+                opacity: 0;
+                box-shadow: 0 40px 60px rgba(0, 0, 0, 0.6);
+            }
+        }
+
+        @keyframes flipIn {
+            from {
+                transform: rotateX(85deg) translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: rotateX(0deg);
+                opacity: 1;
+            }
+        }
+
+        /* Grid nav */
+        .grid-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .nav-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, border-color 0.15s;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.13);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #fff;
+        }
+
+        .grid-title {
+            text-align: center;
+        }
+
+        .grid-month {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        .grid-year {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.35);
+            margin-top: 2px;
+        }
+
+        /* Day labels */
+        .day-labels {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            margin-bottom: 6px;
+        }
+
+        .day-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.35);
+            text-align: center;
+            padding: 5px 0;
+        }
+
+        .day-label.sat {
+            color: rgba(232, 146, 122, 0.75);
+        }
+
+        /* Dates */
+        .dates-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            flex: 1;
+        }
+
+        .date-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            border: 1.5px solid transparent;
+            max-width: 44px;
+            max-height: 44px;
+            margin: auto;
+            width: 100%;
+            transition: background 0.15s, color 0.15s;
+            color: rgba(255, 255, 255, 0.80);
+            overflow: hidden;
+        }
+
+        /* hover light streak */
+        .date-cell::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 30%, rgba(255, 255, 255, 0.12) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            pointer-events: none;
+        }
+
+        .date-cell:hover::after {
+            transform: translateX(100%);
+        }
+
+        .date-cell:hover:not(.today):not(.range-start):not(.range-end) {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .date-cell.today {
+            background: rgba(255, 255, 255, 0.92);
+            color: #0a0810;
+            font-weight: 700;
+            border-color: transparent;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3), 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .date-cell.other-month {
+            color: rgba(255, 255, 255, 0.18);
+        }
+
+        .date-cell.sat:not(.today) {
+            color: rgba(232, 146, 122, 0.8);
+        }
+
+        /* Range: glass pill markers */
+        .date-cell.range-start {
+            background: rgba(42, 107, 110, 0.7) !important;
+            color: #fff !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 0 0 2px rgba(42, 107, 110, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .date-cell.range-end {
+            background: rgba(197, 64, 30, 0.7) !important;
+            color: #fff !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 0 0 2px rgba(197, 64, 30, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* tube-of-light in-range */
+        .date-cell.in-range {
+            background: rgba(42, 107, 110, 0.12);
+            border-radius: 0;
+            border-top: 1px solid rgba(42, 107, 110, 0.2);
+            border-bottom: 1px solid rgba(42, 107, 110, 0.2);
+            border-left: none;
+            border-right: none;
+        }
+
+        .date-cell.in-range:hover {
+            background: rgba(42, 107, 110, 0.2);
+        }
+
+        .range-hint {
+            font-family: 'DM Mono', monospace;
+            font-size: 9.5px;
+            letter-spacing: 0.09em;
+            color: rgba(42, 107, 110, 0.9);
+            text-align: center;
+            margin-top: 10px;
+            min-height: 16px;
+        }
+
+        /* ── FOOTER ── */
+        .cal-footer {
+            background: rgba(255, 255, 255, 0.04);
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scroll-hint {
+            width: 28px;
+            height: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.3);
+            animation: bounce 2.5s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(4px);
+            }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:640px) {
+            .cal-body {
+                flex-direction: column;
+            }
+
+            .notes-panel {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+                min-height: 180px;
+            }
+
+            .cal-header {
+                flex-direction: column;
+                padding: 22px 20px;
+                gap: 12px;
+            }
+
+            .month-name {
+                font-size: 48px;
+            }
+
+            .cal-grid {
+                padding: 14px 12px;
+            }
+
+            .date-cell {
+                font-size: 11px;
+            }
+
+            .calendar-wrapper {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background -->
+    <div class="bg-layer" id="bgLayer"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="calendar-wrapper">
+
+        <!-- Wire binding -->
+        <div class="wire-binding">
+            <div class="coil-row" id="coilRow"></div>
+        </div>
+
+        <!-- Header -->
+        <div class="cal-header" id="calHeader">
+            <div class="quote-section">
+                <div class="big-quote-mark">&ldquo;</div>
+                <div class="quote-track" id="quoteTrack"></div>
+                <div class="quote-dots" id="quoteDots"></div>
+            </div>
+            <div class="month-title-block">
+                <div class="month-name" id="headerMonth">April</div>
+                <div class="month-year" id="headerYear">2026</div>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="cal-body">
+
+            <!-- Notes panel -->
+            <div class="notes-panel">
+                <div class="notes-label">
+                    <span>Notes</span>
+                    <span class="range-ctx-badge" id="rangeCtxBadge">Range</span>
+                </div>
+                <div class="editor-area" id="editorArea"></div>
+                <button class="attach-btn" id="attachBtn" disabled>+ Attach to Range</button>
+            </div>
+
+            <!-- Calendar grid -->
+            <div class="cal-grid" id="calGrid">
+                <div class="grid-nav">
+                    <button class="nav-btn" id="prevBtn">&#8249;</button>
+                    <div class="grid-title">
+                        <div class="grid-month" id="gridMonth">April</div>
+                        <div class="grid-year" id="gridYear">2026</div>
+                    </div>
+                    <button class="nav-btn" id="nextBtn">&#8250;</button>
+                </div>
+
+                <div class="day-labels">
+                    <div class="day-label">Sun</div>
+                    <div class="day-label">Mon</div>
+                    <div class="day-label">Tue</div>
+                    <div class="day-label">Wed</div>
+                    <div class="day-label">Thu</div>
+                    <div class="day-label">Fri</div>
+                    <div class="day-label sat">Sat</div>
+                </div>
+
+                <div class="dates-grid" id="datesGrid"></div>
+                <div class="range-hint" id="rangeHint">Click a date to begin selection</div>
+            </div>
+
+        </div>
+
+        <div class="cal-footer">
+            <div class="scroll-hint">↓</div>
+        </div>
+
+    </div>
+
+    <!-- Slash menu -->
+    <div class="slash-menu" id="slashMenu" style="display:none">
+        <div class="slash-item" data-type="p"><span class="slash-tag">/text</span> Paragraph</div>
+        <div class="slash-item" data-type="h"><span class="slash-tag">/h</span> Heading</div>
+        <div class="slash-item" data-type="todo"><span class="slash-tag">/todo</span> To-do</div>
+    </div>
+
+    <script>
+        // ─────────────────────────────────────────────────────────────
+        // QUOTES
+        // ─────────────────────────────────────────────────────────────
+        const QUOTES = [
+            { text: "A year from now you may wish you had started today. The moment is always now.", author: "Karen Lamb", tint: "rgba(197,64,30,0.10)" },
+            { text: "The secret of getting ahead is getting started.", author: "Mark Twain", tint: "rgba(42,107,110,0.10)" },
+            { text: "Do not wait to strike till the iron is hot; but make it hot by striking.", author: "William Butler Yeats", tint: "rgba(197,64,30,0.08)" },
+            { text: "It's not about having time. It's about making time.", author: "Unknown", tint: "rgba(42,107,110,0.08)" },
+            { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar", tint: "rgba(197,120,30,0.10)" },
+            { text: "Plans are nothing; planning is everything.", author: "Dwight D. Eisenhower", tint: "rgba(42,107,110,0.12)" },
+            { text: "The key is not to prioritize what's on your schedule, but to schedule your priorities.", author: "Stephen Covey", tint: "rgba(60,40,120,0.10)" },
+            { text: "Focus is a matter of deciding what things you're not going to do.", author: "John Carmack", tint: "rgba(20,80,80,0.12)" },
+        ];
+
+        const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        // ─────────────────────────────────────────────────────────────
+        // STATE (localStorage-backed)
+        // ─────────────────────────────────────────────────────────────
+        function uuid() {
+            return 'b-' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
+        }
+
+        function toDateKey(d) {
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem('calState');
+                if (raw) return JSON.parse(raw);
+            } catch (e) { }
+            return {
+                viewMonth: 3, viewYear: 2026,
+                rangeStart: null, rangeEnd: null,
+                quoteIndex: 0,
+                notes: {
+                    global: [
+                        { id: uuid(), type: 'h', content: 'April 2026', done: false },
+                        { id: uuid(), type: 'p', content: '', done: false },
+                        { id: uuid(), type: 'todo', content: 'Review', done: false },
+                        { id: uuid(), type: 'todo', content: 'Schedule', done: true },
+                        { id: uuid(), type: 'p', content: '', done: false },
+                    ],
+                    byRange: {}
+                }
+            };
+        }
+
+        let state = loadState();
+
+        function saveState() {
+            try { localStorage.setItem('calState', JSON.stringify(state)); } catch (e) { }
+        }
+
+        // Current note context key ('global' or range key)
+        function rangeKey() {
+            if (!state.rangeStart || !state.rangeEnd) return null;
+            const lo = state.rangeStart < state.rangeEnd ? state.rangeStart : state.rangeEnd;
+            const hi = state.rangeStart < state.rangeEnd ? state.rangeEnd : state.rangeStart;
+            return `${lo}_${hi}`;
+        }
+
+        function currentNotes() {
+            const k = rangeKey();
+            if (k) {
+                if (!state.notes.byRange[k]) state.notes.byRange[k] = [];
+                return state.notes.byRange[k];
+            }
+            return state.notes.global;
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // COILS
+        // ─────────────────────────────────────────────────────────────
+        function buildCoils() {
+            const row = document.getElementById('coilRow');
+            row.innerHTML = '';
+            const count = Math.floor((row.parentElement.offsetWidth - 56) / 34);
+            for (let i = 0; i < Math.max(count, 12); i++) {
+                const coil = document.createElement('div');
+                coil.className = 'coil';
+                coil.innerHTML = '<div class="coil-back"></div><div class="coil-front"></div>';
+                row.appendChild(coil);
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // QUOTES
+        // ─────────────────────────────────────────────────────────────
+        let quoteTimer = null;
+
+        function buildQuotes() {
+            const track = document.getElementById('quoteTrack');
+            const dots = document.getElementById('quoteDots');
+            track.innerHTML = '';
+            dots.innerHTML = '';
+
+            QUOTES.forEach((q, i) => {
+                const slide = document.createElement('div');
+                slide.className = 'quote-slide' + (i === state.quoteIndex ? ' active' : '');
+                slide.innerHTML = `<div class="quote-text">${q.text}</div><div class="quote-author">— ${q.author}</div>`;
+                track.appendChild(slide);
+
+                const dot = document.createElement('div');
+                dot.className = 'quote-dot' + (i === state.quoteIndex ? ' active' : '');
+                dot.addEventListener('click', () => goToQuote(i));
+                dots.appendChild(dot);
+            });
+
+            applyQuoteTint(state.quoteIndex);
+            startQuoteTimer();
+        }
+
+        function goToQuote(idx) {
+            const slides = document.querySelectorAll('.quote-slide');
+            const dots = document.querySelectorAll('.quote-dot');
+            if (slides[state.quoteIndex]) slides[state.quoteIndex].classList.remove('active');
+            if (dots[state.quoteIndex]) dots[state.quoteIndex].classList.remove('active');
+            state.quoteIndex = idx;
+            if (slides[state.quoteIndex]) slides[state.quoteIndex].classList.add('active');
+            if (dots[state.quoteIndex]) dots[state.quoteIndex].classList.add('active');
+            applyQuoteTint(state.quoteIndex);
+            saveState();
+        }
+
+        function applyQuoteTint(idx) {
+            const header = document.getElementById('calHeader');
+            header.style.background = QUOTES[idx].tint;
+        }
+
+        function startQuoteTimer() {
+            clearInterval(quoteTimer);
+            quoteTimer = setInterval(() => {
+                goToQuote((state.quoteIndex + 1) % QUOTES.length);
+            }, 5000);
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // CALENDAR GRID
+        // ─────────────────────────────────────────────────────────────
+        const today = new Date(2026, 3, 9);
+
+        function isSameDay(a, b) {
+            return a && b &&
+                a.getFullYear() === b.getFullYear() &&
+                a.getMonth() === b.getMonth() &&
+                a.getDate() === b.getDate();
+        }
+
+        function fmtDate(d) {
+            return `${MONTH_NAMES[d.getMonth()].slice(0, 3)} ${d.getDate()}, ${d.getFullYear()}`;
+        }
+
+        function buildGrid() {
+            const year = state.viewYear, month = state.viewMonth;
+            document.getElementById('gridMonth').textContent = MONTH_NAMES[month];
+            document.getElementById('gridYear').textContent = year;
+            document.getElementById('headerMonth').textContent = MONTH_NAMES[month];
+            document.getElementById('headerYear').textContent = year;
+            document.title = `Wall Calendar — ${MONTH_NAMES[month]} ${year}`;
+
+            const grid = document.getElementById('datesGrid');
+            grid.innerHTML = '';
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const prevDays = new Date(year, month, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                grid.appendChild(makeCell(new Date(year, month - 1, prevDays - firstDay + 1 + i), true));
+            }
+            for (let d = 1; d <= daysInMonth; d++) {
+                grid.appendChild(makeCell(new Date(year, month, d), false));
+            }
+            const total = firstDay + daysInMonth;
+            const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
+            for (let d = 1; d <= rem; d++) {
+                grid.appendChild(makeCell(new Date(year, month + 1, d), true));
+            }
+
+            updateRangeHighlight();
+            updateRangeHint();
+            updateAttachBtn();
+        }
+
+        function makeCell(date, otherMonth) {
+            const cell = document.createElement('div');
+            cell.className = 'date-cell';
+            cell.textContent = date.getDate();
+            cell.dataset.ts = date.getTime();
+
+            if (otherMonth) cell.classList.add('other-month');
+            if (date.getDay() === 6) cell.classList.add('sat');
+            if (isSameDay(date, today)) cell.classList.add('today');
+
+            cell.addEventListener('click', () => handleDateClick(date));
+            return cell;
+        }
+
+        function parsedRange() {
+            const rs = state.rangeStart ? new Date(state.rangeStart) : null;
+            const re = state.rangeEnd ? new Date(state.rangeEnd) : null;
+            return { rs, re };
+        }
+
+        function handleDateClick(date) {
+            const { rs, re } = parsedRange();
+            if (!rs || (rs && re)) {
+                state.rangeStart = date.getTime();
+                state.rangeEnd = null;
+                document.getElementById('attachBtn').disabled = true;
+            } else {
+                if (date.getTime() === rs.getTime()) {
+                    state.rangeStart = null;
+                } else if (date < rs) {
+                    state.rangeEnd = rs.getTime();
+                    state.rangeStart = date.getTime();
+                } else {
+                    state.rangeEnd = date.getTime();
+                }
+                if (state.rangeStart && state.rangeEnd) {
+                    document.getElementById('attachBtn').disabled = false;
+                }
+            }
+            updateRangeHighlight();
+            updateRangeHint();
+            updateAttachBtn();
+            updateEditorContext();
+            saveState();
+        }
+
+        function updateRangeHighlight() {
+            const { rs, re } = parsedRange();
+            document.querySelectorAll('.date-cell').forEach(cell => {
+                cell.classList.remove('range-start', 'range-end', 'in-range');
+                const d = new Date(parseInt(cell.dataset.ts));
+                if (rs && isSameDay(d, rs)) cell.classList.add('range-start');
+                else if (re && isSameDay(d, re)) cell.classList.add('range-end');
+                else if (rs && re && d > rs && d < re) cell.classList.add('in-range');
+            });
+        }
+
+        function updateRangeHint() {
+            const { rs, re } = parsedRange();
+            const hint = document.getElementById('rangeHint');
+            if (!rs) {
+                hint.textContent = 'Click a date to begin selection';
+                hint.style.color = 'rgba(255,255,255,0.25)';
+            } else if (!re) {
+                hint.textContent = `Start: ${fmtDate(rs)} — click end date`;
+                hint.style.color = 'rgba(42,180,160,0.8)';
+            } else {
+                hint.textContent = `${fmtDate(rs)} → ${fmtDate(re)}`;
+                hint.style.color = 'rgba(42,180,160,0.9)';
+            }
+        }
+
+        function updateAttachBtn() {
+            const { rs, re } = parsedRange();
+            document.getElementById('attachBtn').disabled = !(rs && re);
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // PAGE FLIP
+        // ─────────────────────────────────────────────────────────────
+        let flipping = false;
+
+        function flipTo(newMonth, newYear) {
+            if (flipping) return;
+            flipping = true;
+            const grid = document.getElementById('calGrid');
+            grid.classList.add('flip-out');
+
+            grid.addEventListener('animationend', function onOut(e) {
+                if (e.animationName !== 'flipOut') return;
+                grid.removeEventListener('animationend', onOut);
+                grid.classList.remove('flip-out');
+
+                state.viewMonth = newMonth;
+                state.viewYear = newYear;
+                saveState();
+                buildGrid();
+
+                grid.classList.add('flip-in');
+                grid.addEventListener('animationend', function onIn(e) {
+                    if (e.animationName !== 'flipIn') return;
+                    grid.removeEventListener('animationend', onIn);
+                    grid.classList.remove('flip-in');
+                    flipping = false;
+                });
+            });
+        }
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            let m = state.viewMonth - 1, y = state.viewYear;
+            if (m < 0) { m = 11; y--; }
+            flipTo(m, y);
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            let m = state.viewMonth + 1, y = state.viewYear;
+            if (m > 11) { m = 0; y++; }
+            flipTo(m, y);
+        });
+
+        // ─────────────────────────────────────────────────────────────
+        // BLOCK EDITOR
+        // ─────────────────────────────────────────────────────────────
+        let slashTargetBlock = null;
+        let slashSelectedIdx = 0;
+
+        function blockData(type = 'p', content = '', done = false) {
+            return { id: uuid(), type, content, done, createdAt: Date.now() };
+        }
+
+        function renderEditor() {
+            const area = document.getElementById('editorArea');
+            area.innerHTML = '';
+            const notes = currentNotes();
+            notes.forEach((bd, i) => {
+                const block = createBlockEl(bd);
+                area.appendChild(block);
+            });
+            if (notes.length === 0) {
+                const b = blockData('p', '');
+                notes.push(b);
+                saveState();
+                area.appendChild(createBlockEl(b));
+            }
+        }
+
+        function updateEditorContext() {
+            const k = rangeKey();
+            const badge = document.getElementById('rangeCtxBadge');
+            if (k) {
+                badge.classList.add('visible');
+                badge.textContent = 'Range context';
+            } else {
+                badge.classList.remove('visible');
+            }
+            renderEditor();
+        }
+
+        function createBlockEl(bd) {
+            const block = document.createElement('div');
+            block.className = 'block';
+            block.dataset.id = bd.id;
+            if (bd.type === 'todo') block.classList.add('todo-block');
+            if (bd.type === 'h') block.classList.add('h-block');
+
+            const drag = document.createElement('div');
+            drag.className = 'block-drag';
+            drag.textContent = '⠿';
+            block.appendChild(drag);
+
+            if (bd.type === 'todo') {
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.className = 'block-check';
+                cb.checked = bd.done;
+                cb.addEventListener('change', () => {
+                    inp.classList.toggle('done', cb.checked);
+                    updateBlockData(bd.id, { done: cb.checked });
+                });
+                block.appendChild(cb);
+            }
+
+            const inp = document.createElement('textarea');
+            inp.className = 'block-input' + (bd.done ? ' done' : '');
+            inp.placeholder = bd.type === 'h' ? 'Heading' : bd.type === 'todo' ? 'To-do' : 'Write';
+            inp.rows = 1;
+            inp.value = bd.content;
+            autosize(inp);
+
+            inp.addEventListener('input', () => {
+                autosize(inp);
+                updateBlockData(bd.id, { content: inp.value });
+                handleSlashInput(inp, block);
+            });
+
+            inp.addEventListener('keydown', (e) => handleBlockKey(e, block, inp, bd));
+
+            block.appendChild(inp);
+            return block;
+        }
+
+        function autosize(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        }
+
+        function updateBlockData(id, patch) {
+            const notes = currentNotes();
+            const idx = notes.findIndex(b => b.id === id);
+            if (idx !== -1) Object.assign(notes[idx], patch);
+            saveState();
+        }
+
+        function handleBlockKey(e, block, inp, bd) {
+            const slashMenu = document.getElementById('slashMenu');
+            const isSlashOpen = slashMenu.style.display !== 'none';
+
+            if (isSlashOpen) {
+                const items = slashMenu.querySelectorAll('.slash-item');
+                if (e.key === 'ArrowDown') { e.preventDefault(); slashSelectedIdx = (slashSelectedIdx + 1) % items.length; updateSlashSel(); return; }
+                if (e.key === 'ArrowUp') { e.preventDefault(); slashSelectedIdx = (slashSelectedIdx - 1 + items.length) % items.length; updateSlashSel(); return; }
+                if (e.key === 'Tab' || e.key === 'Enter') { e.preventDefault(); applySlash(items[slashSelectedIdx].dataset.type, block, bd); return; }
+                if (e.key === 'Escape') { hideSlash(); return; }
+            }
+
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const notes = currentNotes();
+                const idx = notes.findIndex(b => b.id === bd.id);
+                const newBd = blockData('p', '');
+                notes.splice(idx + 1, 0, newBd);
+                saveState();
+                const area = document.getElementById('editorArea');
+                const newEl = createBlockEl(newBd);
+                block.insertAdjacentElement('afterend', newEl);
+                newEl.querySelector('.block-input').focus();
+            }
+
+            if (e.key === 'Backspace' && inp.value === '') {
+                e.preventDefault();
+                const notes = currentNotes();
+                const idx = notes.findIndex(b => b.id === bd.id);
+                if (notes.length > 1) {
+                    notes.splice(idx, 1);
+                    saveState();
+                    const prevEl = block.previousElementSibling;
+                    block.remove();
+                    if (prevEl) {
+                        const ti = prevEl.querySelector('.block-input');
+                        if (ti) { ti.focus(); const l = ti.value.length; ti.setSelectionRange(l, l); }
+                    }
+                }
+            }
+        }
+
+        function handleSlashInput(inp, block) {
+            if (inp.value === '/') {
+                slashTargetBlock = block;
+                slashSelectedIdx = 0;
+                showSlash(block);
+            } else {
+                hideSlash();
+            }
+        }
+
+        function showSlash(block) {
+            const menu = document.getElementById('slashMenu');
+            const rect = block.getBoundingClientRect();
+            menu.style.display = 'block';
+            menu.style.top = (rect.bottom + 4) + 'px';
+            menu.style.left = (rect.left + 28) + 'px';
+            updateSlashSel();
+        }
+
+        function hideSlash() {
+            document.getElementById('slashMenu').style.display = 'none';
+            slashTargetBlock = null;
+        }
+
+        function updateSlashSel() {
+            document.querySelectorAll('.slash-item').forEach((it, i) => it.classList.toggle('selected', i === slashSelectedIdx));
+        }
+
+        function applySlash(type, block, bd) {
+            const inp = block.querySelector('.block-input');
+            inp.value = '';
+            updateBlockData(bd.id, { type, content: '', done: false });
+
+            block.className = 'block';
+            if (type === 'todo') block.classList.add('todo-block');
+            if (type === 'h') block.classList.add('h-block');
+
+            const existing = block.querySelector('.block-check');
+            if (existing) existing.remove();
+
+            if (type === 'todo') {
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.className = 'block-check';
+                cb.addEventListener('change', () => {
+                    inp.classList.toggle('done', cb.checked);
+                    updateBlockData(bd.id, { done: cb.checked });
+                });
+                block.insertBefore(cb, inp);
+                inp.placeholder = 'To-do';
+            } else if (type === 'h') {
+                inp.placeholder = 'Heading';
+            } else {
+                inp.placeholder = 'Write';
+            }
+
+            hideSlash();
+            inp.focus();
+        }
+
+        document.querySelectorAll('.slash-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (slashTargetBlock) {
+                    const bd = currentNotes().find(b => b.id === slashTargetBlock.dataset.id);
+                    if (bd) applySlash(item.dataset.type, slashTargetBlock, bd);
+                }
+            });
+        });
+
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.slash-menu') && !e.target.closest('.block-input')) hideSlash();
+        });
+
+        // Keyboard navigation shortcut: Escape hides slash
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') hideSlash();
+        });
+
+        // ─────────────────────────────────────────────────────────────
+        // ATTACH TO RANGE
+        // ─────────────────────────────────────────────────────────────
+        document.getElementById('attachBtn').addEventListener('click', () => {
+            const { rs, re } = parsedRange();
+            if (!rs || !re) return;
+            const label = `${fmtDate(rs)} → ${fmtDate(re)}`;
+
+            // Add a range-heading block to global notes
+            const rBd = { id: uuid(), type: 'range-heading', content: label, done: false, createdAt: Date.now() };
+            state.notes.global.unshift(rBd);
+            saveState();
+
+            // Switch to range context
+            updateEditorContext();
+        });
+
+        // ─────────────────────────────────────────────────────────────
+        // Patch createBlockEl to support range-heading type
+        // ─────────────────────────────────────────────────────────────
+        const _origRender = renderEditor;
+
+        // Override — handle range-heading in the display
+        const origCreate = createBlockEl;
+        function createBlockElPatched(bd) {
+            if (bd.type === 'range-heading') {
+                const block = document.createElement('div');
+                block.className = 'block range-heading';
+                block.dataset.id = bd.id;
+                const drag = document.createElement('div');
+                drag.className = 'block-drag';
+                drag.textContent = '⠿';
+                block.appendChild(drag);
+                const inp = document.createElement('textarea');
+                inp.className = 'block-input';
+                inp.value = bd.content;
+                inp.readOnly = true;
+                inp.rows = 1;
+                autosize(inp);
+                inp.addEventListener('keydown', () => { });
+                block.appendChild(inp);
+                return block;
+            }
+            return origCreate(bd);
+        }
+        // Replace globally
+        window.createBlockEl = createBlockElPatched;
+
+        // Patch renderEditor to use patched version
+        function renderEditorPatched() {
+            const area = document.getElementById('editorArea');
+            area.innerHTML = '';
+            const notes = currentNotes();
+            notes.forEach((bd) => {
+                const block = window.createBlockEl(bd);
+                area.appendChild(block);
+            });
+            if (notes.length === 0) {
+                const b = blockData('p', '');
+                notes.push(b);
+                saveState();
+                area.appendChild(window.createBlockEl(b));
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // INIT
+        // ─────────────────────────────────────────────────────────────
+        function init() {
+            buildCoils();
+            buildQuotes();
+            buildGrid();
+            renderEditorPatched();
+            updateRangeHint();
+            updateAttachBtn();
+
+            // restore range context badge
+            if (state.rangeStart && state.rangeEnd) {
+                document.getElementById('attachBtn').disabled = false;
+            }
+
+            window.addEventListener('resize', buildCoils);
+        }
+
+        // Override renderEditor with patched version permanently
+        window.renderEditor = renderEditorPatched;
+        window.updateEditorContext = function () {
+            const k = rangeKey();
+            const badge = document.getElementById('rangeCtxBadge');
+            if (k) { badge.classList.add('visible'); badge.textContent = 'Range context'; }
+            else { badge.classList.remove('visible'); }
+            renderEditorPatched();
+        };
+
+        init();
+    </script>
+</body>
+
+</html>
